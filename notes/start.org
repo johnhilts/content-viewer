@@ -1,0 +1,21 @@
+* dotnet
+** global startup
++ get content root from appsettings.json
++ list of folders
+
+** rest functions
++ list of folders
++ fetch content info by type
+*** content info
++ name (user entered; default to original name)
++ date created
++ geo tag related info (from exif)
++ note (completely user entered and optional)
+
+* react
+** views
++ folder list
+just list them as links
++ content (with content info)
+
+
