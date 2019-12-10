@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace dotnet
 {
@@ -28,6 +29,8 @@ namespace dotnet
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+	    services.Configure<ContentSettingsModel>(Configuration.GetSection("ContentSettings"));  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

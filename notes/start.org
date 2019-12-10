@@ -5,7 +5,8 @@
 
 ** rest functions
 + list of folders
-+ fetch content info by type
+*** by current folder
++ fetch content info by type (photo or video)
 *** content info
 + name (user entered; default to original name)
 + date created
@@ -14,8 +15,9 @@
 
 * react
 ** views
-+ folder list
++ folder list (thumbnails)
 just list them as links
++ file list
+*** show name and date
++ show rest of exif info in tool tip on hover
 + content (with content info)
-
-
