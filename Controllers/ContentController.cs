@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
@@ -38,8 +39,10 @@ namespace dotnet.Controllers
         public class ResponseModel
         {
             public Guid Id {get; set;}
+            public String CurrentFolder {get; set;}
             public IEnumerable<ContentInfo> Folders {get; set;}
             public IEnumerable<ContentInfo> Files {get; set;}
+            public StringDictionary Links {get; set;}
         }
 
         public class ContentInfo
@@ -48,7 +51,6 @@ namespace dotnet.Controllers
             public ContentType ContentType  {get; set;}
         }
 
-        [Route("folder")]
         [HttpGet]
         [Produces("application/json")]
         public async Task<IActionResult> Get()
@@ -56,11 +58,18 @@ namespace dotnet.Controllers
             // TODO: we can just get the session info on-demand - putting this here for now as an example ...
             var session = await _sessionService.GetSession(_contentModel.Root);
             // TODO: put IO logic in a utility ...
+            var currentFolder = MapContentFolder(session.CurrentFolder);
             var folders = Directory.GetDirectories(_contentModel.Root);
             var contentFolders = folders.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.Folder, });
             var files = Directory.GetFiles(_contentModel.Root);
             var contentFiles = files.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.File, });
-            return Ok(new ResponseModel {Id = session.SessionId, Folders = contentFolders, Files = contentFiles, });
+            var links = new StringDictionary {{"Folder", "api/content/folder/{folderName}"}, {"File", "api/content/file/{fileName}"}, };
+            return Ok(new ResponseModel {Id = session.SessionId, CurrentFolder = currentFolder, Folders = contentFolders, Files = contentFiles, Links = links, });
+        }
+
+        private string MapContentFolder(string physicalRelativeFolder)
+        {
+            return physicalRelativeFolder.Replace(@"./wwwroot/", string.Empty);
         }
 
     }
