@@ -1,11 +1,25 @@
 * dotnet
 ** global startup
 + get content root from appsettings.json
-+ list of folders
 
 ** rest functions
-+ list of folders
+*** list of files
++ can be either files or folders - response model will have necessary info
++ request will contain ID that links to folder name
+
+Server: here's a list of folders and files
+Client: go to folder xyx -> the current folder has to be saved as a cookie on the server
+(or we could cache it)
+
+Server: here's a list of files
+Client: display list of files, but also need their server path 
+The Server needs to return the current server path
+**** RequestModel
++ Current Path Guid (will match with server state, cookie or cache)
++ Name of folder or file
++ Content Type (folder or file)
 *** by current folder
++ "current folder" will be determined by parameter
 + fetch content info by type (photo or video)
 *** content info
 + name (user entered; default to original name)
