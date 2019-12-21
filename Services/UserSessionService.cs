@@ -42,11 +42,12 @@ namespace dotnet.Services
             return model;
         }
 
-        public async Task UpdateSession(UserSessionUpdateModel updateModel)
+        public async Task<UserSessionModel> UpdateSession(UserSessionUpdateModel updateModel)
         {
             var oldModel = await GetSession(null);
             var writeModel = new UserSessionModel {SessionId = oldModel.SessionId, CurrentFolder = updateModel.CurrentFolder, };
             await SaveSession(writeModel);
+            return writeModel;
         }
 
         private async Task SaveSession(UserSessionModel model)

@@ -27,6 +27,16 @@ The Server needs to return the current server path
 + geo tag related info (from exif)
 + note (completely user entered and optional)
 
+**** Request folder
+ api/content/folder/{folderName}
+***** Response
+same as content request
+links will be different though: same + "back"
+**** Request file
+api/content/file/{fileName}
+***** Response
+This can be handled client side since all the info has been transferred ...
+
 * react
 ** views
 + folder list (thumbnails)
