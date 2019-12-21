@@ -1,0 +1,15 @@
+* Stateless API
+** Verbs
+*** GET
++ no params
++ gets content of current folder (saved in session ... ok, this part's not stateless)
++ same HATEOAS
+
+*** PUT
+body / payload has:
++ desired new current folder
++ HATEOAS links provide GET url to retrieve content
+
+*** BACK
+/no need for back handler/
+The front end will handle figuring out what current folder it wants and sending that in PUT
