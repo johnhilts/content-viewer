@@ -5,11 +5,16 @@ using dotnet.Models;
 
 namespace dotnet.Utils
 {
-    public class FileUtility
+    public static class FileUtility
     {
         public static string MapContentFolder(string physicalRelativeFolder)
         {
             return physicalRelativeFolder.Replace(@"./wwwroot/", string.Empty);
+        }
+
+        public static bool Exists(string path)
+        {
+            return Directory.Exists(path);
         }
 
         public static IEnumerable<ContentModel> GetFolders(string currentFolder)

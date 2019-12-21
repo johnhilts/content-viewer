@@ -31,36 +31,38 @@ namespace dotnet.Controllers
             _contentModel = model.Value;
             _context = contextAccessor.HttpContext;
             _sessionService = new UserSessionService(_context);
-            // _sessionModel = await _sessionService.GetSession(_contentModel.Root); 
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await GetContentModel(string.Empty));
+            return Ok(await GetContentModel(GetCurrentRequestFolder(new RequestModel())));
         }
 
-        [HttpGet]
+        [HttpPut]
+        [Route("folder")]
+        public async Task<IActionResult> Get([FromBody]RequestModel model)
         {
+            var currentRequestFolder = GetCurrentRequestFolder(model);
+            if (!FileUtility.Exists(currentRequestFolder)) 
+                return NotFound();
+
+            return Ok(await GetContentModel(currentRequestFolder));
         }
 
-        [HttpGet]
-        [Route("folder/{folderName}")]
-        public async Task<IActionResult> Get(string folderName)
+        private string GetCurrentRequestFolder(RequestModel model)
         {
-            return Ok(await GetContentModel(folderName));
+            return $"{_contentModel.Root}/{model.CurrentFolderName}/{model.RequestFolderName}";
         }
 
-        // TODO: implement Route("folder/back")
-
-        private async Task<ResponseModel> GetContentModel(string folderName)
+        private async Task<ResponseModel> GetContentModel(string currentRequestFolder)
         {
-            var currentRequestFolder = $"{_contentModel.Root}/{folderName}";
+            // TODO: we don't even need session now, which means we also don't need async/await...
             var updatedSession = await _sessionService.UpdateSession(new UserSessionUpdateModel {CurrentFolder = currentRequestFolder, }); 
-            var currentFolder = FileUtility.MapContentFolder(updatedSession.CurrentFolder);
+            var currentFolder = FileUtility.MapContentFolder(currentRequestFolder);
             var folders = FileUtility.GetFolders(currentRequestFolder);
             var files = FileUtility.GetFiles(currentRequestFolder);
-            var links = new StringDictionary {{"Folder", "api/content/folder/{folderName}"}, {"Back", "api/content/folder/back"}, };
+            var links = new StringDictionary {{"Folder", "api/content/folder"}, };
             return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = folders, Files = files, Links = links, };
         }
 
