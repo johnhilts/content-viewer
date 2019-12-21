@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using dotnet.Models;
 using dotnet.Services;
 using dotnet.Services.Models;
+using dotnet.Utils;
 
 namespace dotnet.Controllers
 {
@@ -22,68 +24,44 @@ namespace dotnet.Controllers
 
         private readonly ContentSettingsModel _contentModel;
         private readonly UserSessionService _sessionService;
-        private readonly UserSessionModel _sessionModel;
+        // private readonly UserSessionModel _sessionModel;
 
         public ContentApiController(IOptions<ContentSettingsModel> model, IHttpContextAccessor contextAccessor)
         {
             _contentModel = model.Value;
             _context = contextAccessor.HttpContext;
             _sessionService = new UserSessionService(_context);
-        }
-
-        public enum ContentType
-        {
-            Folder,
-            File,
-        }
-
-        public class ResponseModel
-        {
-            public Guid Id {get; set;}
-            public String CurrentFolder {get; set;}
-            public IEnumerable<ContentInfo> Folders {get; set;}
-            public IEnumerable<ContentInfo> Files {get; set;}
-            public StringDictionary Links {get; set;}
-        }
-
-        public class ContentInfo
-        {
-            public string Name {get; set;}
-            public ContentType ContentType  {get; set;}
+            // _sessionModel = await _sessionService.GetSession(_contentModel.Root); 
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await GetContentInfo(string.Empty));
+            return Ok(await GetContentModel(string.Empty));
+        }
+
+        [HttpGet]
+        {
         }
 
         [HttpGet]
         [Route("folder/{folderName}")]
         public async Task<IActionResult> Get(string folderName)
         {
-            return Ok(await GetContentInfo(folderName));
+            return Ok(await GetContentModel(folderName));
         }
 
-        private async Task<ResponseModel> GetContentInfo(string folderName)
+        // TODO: implement Route("folder/back")
+
+        private async Task<ResponseModel> GetContentModel(string folderName)
         {
             var currentRequestFolder = $"{_contentModel.Root}/{folderName}";
-            // TODO: we can just get the session info on-demand - putting this here for now as an example ...
-            var session = await _sessionService.GetSession(_contentModel.Root); // TODO: this will only work 1 level deep
             var updatedSession = await _sessionService.UpdateSession(new UserSessionUpdateModel {CurrentFolder = currentRequestFolder, }); 
-            // TODO: put IO logic in a utility ...
-            var currentFolder = MapContentFolder(updatedSession.CurrentFolder);
-            var folders = Directory.GetDirectories(currentRequestFolder);
-            var contentFolders = folders.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.Folder, });
-            var files = Directory.GetFiles(currentRequestFolder);
-            var contentFiles = files.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.File, });
+            var currentFolder = FileUtility.MapContentFolder(updatedSession.CurrentFolder);
+            var folders = FileUtility.GetFolders(currentRequestFolder);
+            var files = FileUtility.GetFiles(currentRequestFolder);
             var links = new StringDictionary {{"Folder", "api/content/folder/{folderName}"}, {"Back", "api/content/folder/back"}, };
-            return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = contentFolders, Files = contentFiles, Links = links, };
-        }
-
-        private string MapContentFolder(string physicalRelativeFolder)
-        {
-            return physicalRelativeFolder.Replace(@"./wwwroot/", string.Empty);
+            return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = folders, Files = files, Links = links, };
         }
 
     }
