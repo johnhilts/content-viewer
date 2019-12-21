@@ -55,21 +55,17 @@ namespace dotnet.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            // TODO: we can just get the session info on-demand - putting this here for now as an example ...
-            var session = await _sessionService.GetSession(_contentModel.Root);
-            // TODO: put IO logic in a utility ...
-            var currentFolder = MapContentFolder(session.CurrentFolder);
-            var folders = Directory.GetDirectories(_contentModel.Root);
-            var contentFolders = folders.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.Folder, });
-            var files = Directory.GetFiles(_contentModel.Root);
-            var contentFiles = files.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.File, });
-            var links = new StringDictionary {{"Folder", "api/content/folder/{folderName}"}, };
-            return Ok(new ResponseModel {Id = session.SessionId, CurrentFolder = currentFolder, Folders = contentFolders, Files = contentFiles, Links = links, });
+            return Ok(await GetContentInfo(string.Empty));
         }
 
         [HttpGet]
         [Route("folder/{folderName}")]
         public async Task<IActionResult> Get(string folderName)
+        {
+            return Ok(await GetContentInfo(folderName));
+        }
+
+        private async Task<ResponseModel> GetContentInfo(string folderName)
         {
             var currentRequestFolder = $"{_contentModel.Root}/{folderName}";
             // TODO: we can just get the session info on-demand - putting this here for now as an example ...
@@ -82,7 +78,7 @@ namespace dotnet.Controllers
             var files = Directory.GetFiles(currentRequestFolder);
             var contentFiles = files.Select(s => new ContentInfo {Name = Path.GetFileName(s), ContentType = ContentType.File, });
             var links = new StringDictionary {{"Folder", "api/content/folder/{folderName}"}, {"Back", "api/content/folder/back"}, };
-            return Ok(new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = contentFolders, Files = contentFiles, Links = links, });
+            return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = contentFolders, Files = contentFiles, Links = links, };
         }
 
         private string MapContentFolder(string physicalRelativeFolder)
