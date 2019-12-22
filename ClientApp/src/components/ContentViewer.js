@@ -13,36 +13,52 @@ export class ContentViewer extends Component {
   }
 
   static renderContentTable(contentInfo) {
-    return (
-      <table className='table table-striped' aria-labelledby="tabelLabel">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contentInfo.map(content =>
-            <tr key={content.name}>
-              <td>{content.name}</td>
-              <td>{content.contentType}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    );
+      const getContent = (contentInfo) => {
+          const headerTitle = contentInfo[0].contentType === 0
+          ? 'Folder'
+          : 'File'
+        return (
+            <table className='table table-striped' aria-labelledby="tabelLabel">
+                <thead>
+                  <tr>
+                    <th>{headerTitle}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contentInfo.map(content =>
+                    <tr key={content.name}>
+                      <td><a href="#" onClick={alert(content.name)}>{content.name}</a></td>
+                    </tr>
+                  )}
+                </tbody>
+            </table>
+        )
+      }
+
+    const contents = contentInfo.length
+      ?
+      getContent(contentInfo)
+      :
+      <div>&nbsp;</div>
+
+    return contents
   }
 
   render() {
-    let contents = this.state.loading
+    let folders = this.state.loading
       ? <p><em>Loading...</em></p>
       : ContentViewer.renderContentTable(this.state.folders);
+
+    let files = this.state.loading
+      ? <p><em>Loading...</em></p>
+      : ContentViewer.renderContentTable(this.state.files);
 
     return (
       <div>
         <h1 id="tabelLabel" >Content Viewer</h1>
-        <p>This component demonstrates fetching data from the server.</p>
-        {contents}
+        <p>Select an item to view its content:</p>
+        {folders}
+        {files}
       </div>
     );
   }
