@@ -44,7 +44,7 @@ namespace dotnet.Controllers
         public async Task<IActionResult> Get([FromBody]RequestModel model)
         {
             var currentRequestFolder = GetCurrentRequestFolder(model);
-            if (!FileUtility.Exists(currentRequestFolder)) 
+            if (!currentRequestFolder.Exists()) 
                 return NotFound();
 
             return Ok(await GetContentModel(currentRequestFolder));
@@ -59,9 +59,9 @@ namespace dotnet.Controllers
         {
             // TODO: we don't even need session now, which means we also don't need async/await...
             var updatedSession = await _sessionService.UpdateSession(new UserSessionUpdateModel {CurrentFolder = currentRequestFolder, }); 
-            var currentFolder = FileUtility.MapContentFolder(currentRequestFolder);
-            var folders = FileUtility.GetFolders(currentRequestFolder);
-            var files = FileUtility.GetFiles(currentRequestFolder);
+            var currentFolder = currentRequestFolder.MapContentFolder();
+            var folders = currentRequestFolder.GetFolders();
+            var files = currentRequestFolder.GetFiles();
             var links = new StringDictionary {{"Folder", "api/content/folder"}, };
             return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = folders, Files = files, Links = links, };
         }

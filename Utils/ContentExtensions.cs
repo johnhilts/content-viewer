@@ -5,25 +5,25 @@ using dotnet.Models;
 
 namespace dotnet.Utils
 {
-    public static class FileUtility
+    public static class ContentExtensions
     {
-        public static string MapContentFolder(string physicalRelativeFolder)
+        public static string MapContentFolder(this string physicalRelativeFolder)
         {
             return physicalRelativeFolder.Replace(@"./wwwroot/", string.Empty);
         }
 
-        public static bool Exists(string path)
+        public static bool Exists(this string path)
         {
             return Directory.Exists(path);
         }
 
-        public static IEnumerable<ContentModel> GetFolders(string currentFolder)
+        public static IEnumerable<ContentModel> GetFolders(this string currentFolder)
         {
             var folders = Directory.GetDirectories(currentFolder);
             return folders.Select(s => new ContentModel {Name = Path.GetFileName(s), ContentType = ContentType.Folder, });
         }
 
-        public static IEnumerable<ContentModel> GetFiles(string currentFolder)
+        public static IEnumerable<ContentModel> GetFiles(this string currentFolder)
         {
             var files = Directory.GetFiles(currentFolder);
             return files.Select(s => new ContentModel {Name = Path.GetFileName(s), ContentType = ContentType.File, });
