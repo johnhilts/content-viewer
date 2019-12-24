@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
 
-export class ContentViewer extends Component {
-  // static displayName = FetchData.name;
-
-  constructor(props) {
-    super(props);
-    this.state = { currentFolder: '', folders: [], files: [], loading: true };
-  }
-
-  componentDidMount() {
-    this.populateContentData();
-  }
-
-  static renderContentTable(contentInfo) {
+const renderContentTable = (contentInfo) => {
       const getContent = (contentInfo) => {
           const headerTitle = contentInfo[0].contentType === 0
           ? 'Folder'
@@ -27,7 +15,14 @@ export class ContentViewer extends Component {
                 <tbody>
                   {contentInfo.map(content =>
                     <tr key={content.name}>
-                      <td><a href="#" onClick={alert(content.name)}>{content.name}</a></td>
+                      <td>
+                          <button 
+                            type="button"
+                            className="link-button" 
+                            onClick={() => this.setState({showSomething: true})}>
+                              {content.name}
+                          </button>
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -44,14 +39,14 @@ export class ContentViewer extends Component {
     return contents
   }
 
-  render() {
-    let folders = this.state.loading
+export default function ContentViewer(props) {
+    let folders = props.loading
       ? <p><em>Loading...</em></p>
-      : ContentViewer.renderContentTable(this.state.folders);
+      : renderContentTable(props.folders, '123');
 
-    let files = this.state.loading
+    let files = props.loading
       ? <p><em>Loading...</em></p>
-      : ContentViewer.renderContentTable(this.state.files);
+      : renderContentTable(props.files, '456');
 
     return (
       <div>
@@ -62,10 +57,3 @@ export class ContentViewer extends Component {
       </div>
     );
   }
-
-  async populateContentData() {
-    const response = await fetch('api/content');
-    const data = await response.json();
-    this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, loading: false });
-  }
-}
