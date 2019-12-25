@@ -27,3 +27,8 @@ code {
 .link-button:focus {
     text-decoration: none;
 }
+
+.thumbnail {
+    height: 100px;
+    width: 100px;
+}

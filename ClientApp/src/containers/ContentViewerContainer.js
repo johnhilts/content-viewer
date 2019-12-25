@@ -38,6 +38,7 @@ export class ContentViewerContainer extends Component {
       <ContentViewer
         onContentClick={this.handleContentClick}
         loading={this.state.loading}
+        currentFolder={this.state.currentFolder}
         folders={this.state.folders}
         files={this.state.files}
         />

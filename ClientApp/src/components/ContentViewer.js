@@ -1,8 +1,39 @@
 import React, { Component } from 'react';
 
-const renderContentTable = (contentInfo, onContentClick) => {
+const renderFolders = (content, contentName, onContentClick) => {
+    return (
+        <tr key={content.name}>
+          <td>
+              <button 
+                type="button"
+                className="link-button" 
+                onClick={onContentClick.bind(null, contentName, content.contentType)}>
+                  {content.name}
+              </button>
+          </td>
+        </tr>
+    )
+}
+
+const renderFiles = (content, contentName, onContentClick, currentFolder) => {
+    const isImage = !contentName.endsWith('.mov')
+    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className='thumbnail' />
+    const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className='thumbnail' />
+    const renderElement = isImage ? image : video
+
+    return (
+        <tr key={content.name}>
+          <td>
+            {renderElement}
+          </td>
+        </tr>
+    )
+}
+
+const renderContentTable = (contentInfo, onContentClick, currentFolder) => {
       const getContent = (contentInfo) => {
-          const headerTitle = contentInfo[0].contentType === 0
+          const isFolder = contentInfo[0].contentType === 0
+          const headerTitle = isFolder
           ? 'Folders'
           : 'Files'
         return (
@@ -17,18 +48,9 @@ const renderContentTable = (contentInfo, onContentClick) => {
                           const contentName = content.name === 'Go Back ...'
                           ? '..'
                           : content.name
-                      return (
-                        <tr key={content.name}>
-                          <td>
-                              <button 
-                                type="button"
-                                className="link-button" 
-                                onClick={onContentClick.bind(null, contentName, content.contentType)}>
-                                  {content.name}
-                              </button>
-                          </td>
-                        </tr>
-                      )
+                      return isFolder
+                      ? renderFolders(content, contentName, onContentClick)
+                      : renderFiles(contentInfo, contentName, onContentClick, currentFolder)
                       }
                   )}
                 </tbody>
@@ -54,11 +76,11 @@ export default function ContentViewer(props) {
     let folderData = addReturnFolderData(props.folders)
     let folders = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(folderData, props.onContentClick);
+      : renderContentTable(folderData, props.onContentClick, props.currentFolder);
 
     let files = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(props.files, props.onContentClick);
+      : renderContentTable(props.files, props.onContentClick, props.currentFolder);
 
     return (
       <div>
