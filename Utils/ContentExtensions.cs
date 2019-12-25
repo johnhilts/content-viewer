@@ -9,7 +9,7 @@ namespace dotnet.Utils
     {
         public static string MapContentFolder(this string physicalRelativeFolder)
         {
-            return physicalRelativeFolder.Replace(@"./wwwroot/", string.Empty);
+            return physicalRelativeFolder.Replace(@"./wwwroot/content", string.Empty);
         }
 
         public static bool Exists(this string path)

@@ -41,7 +41,7 @@ namespace dotnet.Controllers
 
         [HttpPut]
         [Route("folder")]
-        public async Task<IActionResult> Get([FromBody]RequestModel model)
+        public async Task<IActionResult> Put([FromBody]RequestModel model)
         {
             var currentRequestFolder = GetCurrentRequestFolder(model);
             if (!currentRequestFolder.Exists()) 

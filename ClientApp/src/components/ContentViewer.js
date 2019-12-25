@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-const renderContentTable = (contentInfo) => {
+const renderContentTable = (contentInfo, onContentClick) => {
       const getContent = (contentInfo) => {
           const headerTitle = contentInfo[0].contentType === 0
-          ? 'Folder'
-          : 'File'
+          ? 'Folders'
+          : 'Files'
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
                 <thead>
@@ -13,17 +13,23 @@ const renderContentTable = (contentInfo) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {contentInfo.map(content =>
-                    <tr key={content.name}>
-                      <td>
-                          <button 
-                            type="button"
-                            className="link-button" 
-                            onClick={() => this.setState({showSomething: true})}>
-                              {content.name}
-                          </button>
-                      </td>
-                    </tr>
+                  {contentInfo.map(content => {
+                          const contentName = content.name === 'Go Back ...'
+                          ? '..'
+                          : content.name
+                      return (
+                        <tr key={content.name}>
+                          <td>
+                              <button 
+                                type="button"
+                                className="link-button" 
+                                onClick={onContentClick.bind(null, contentName, content.contentType)}>
+                                  {content.name}
+                              </button>
+                          </td>
+                        </tr>
+                      )
+                      }
                   )}
                 </tbody>
             </table>
@@ -39,14 +45,20 @@ const renderContentTable = (contentInfo) => {
     return contents
   }
 
+    const addReturnFolderData = (folderData) => {
+        const folders = folderData ? folderData : []
+        return [{name: 'Go Back ...', contentType: 0}, ...folders]
+    }
+
 export default function ContentViewer(props) {
+    let folderData = addReturnFolderData(props.folders)
     let folders = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(props.folders, '123');
+      : renderContentTable(folderData, props.onContentClick);
 
     let files = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(props.files, '456');
+      : renderContentTable(props.files, props.onContentClick);
 
     return (
       <div>
