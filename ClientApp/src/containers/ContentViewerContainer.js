@@ -22,7 +22,7 @@ export class ContentViewerContainer extends Component {
         return folders.filter((f,i) => i < folders.length).reduce((a, f) => a + '/' + f)
     }
 
-    handleContentClick(contentName, contentType, event) {
+    handleContentClick(contentName, contentType, currentFileIndex, event) {
         const handleFolderClick = (contentName) => {
             this.setState({loading: true, currentFileIndex: -1, })
             // TODO use an extension (js has extensions??)
@@ -33,7 +33,7 @@ export class ContentViewerContainer extends Component {
             this.rePopulateContentData(contentName, contentType)
         }
 
-        const handleFileClick = (contentName) => {
+        const handleFileClick = (contentName, currentFileIndex) => {
             const currentFileIndex = this.state.files.findIndex(fi => fi.name === contentName)
             this.setState({ currentFileIndex: currentFileIndex, showThumbnails: false, });
         }

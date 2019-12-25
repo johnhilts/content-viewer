@@ -21,17 +21,23 @@ const renderFolders = (content, contentName, onContentClick) => {
     )
 }
 
-const renderFiles = (content, contentName, onContentClick, currentFolder, showThumbnails) => {
+const renderFiles = (content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails) => {
     const contentClass = showThumbnails ? 'thumbnail' : ''
     const isImage = !contentName.endsWith('.mov')
     const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} />
     const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className={contentClass} controls />
-    const renderElement = isImage ? image : video
+    const renderElementType = isImage ? image : video
+    const onClick = onContentClick.bind(null, contentName, content.contentType, currentFileIndex)
+    const renderElement = renderButton(renderElementType, onClick)
+    const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Previous</span>, onClick)
+    const renderNext = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Next</span>, onClick)
 
     return (
         <tr key={content.name}>
           <td>
-            {renderButton(renderElement, onContentClick.bind(null, contentName, content.contentType))}
+            {renderPrevious}
+            {renderElement}
+            {renderNext}
           </td>
         </tr>
     )
@@ -60,7 +66,7 @@ const renderContentTable = (contentInfo, onContentClick, currentFolder, currentF
                           : content.name
                       return isFolder
                       ? renderFolders(content, contentName, onContentClick)
-                      : renderFiles(content, contentName, onContentClick, currentFolder, showThumbnails)
+                      : renderFiles(content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails)
                       }
                   )}
                 </tbody>
