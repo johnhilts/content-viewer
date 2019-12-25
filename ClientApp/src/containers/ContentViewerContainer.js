@@ -23,14 +23,28 @@ export class ContentViewerContainer extends Component {
     }
 
     handleContentClick(contentName, contentType, event) {
-        event.preventDefault();
-        this.setState({loading: true})
-        // TODO use an extension
-        const getParentFolder = contentName === '...'
-        if (getParentFolder) {
-            this.setState({currentFolder: this.parseParentFolder(contentName)})
+        const handleFolderClick = (contentName) => {
+            this.setState({loading: true})
+            // TODO use an extension (js has extensions??)
+            const getParentFolder = contentName === '...'
+            if (getParentFolder) {
+                this.setState({currentFolder: this.parseParentFolder(contentName)})
+            }
+            this.rePopulateContentData(contentName, contentType)
         }
-        this.rePopulateContentData(contentName, contentType)
+
+        const handleFileClick = (contentName) => {
+            this.setState({ folders: [], files: [{name: contentName, contentType: 1}], showThumbnails: false, });
+        }
+
+        event.preventDefault();
+
+        if (contentType === 0) {
+            handleFolderClick(contentName)
+        }
+        else {
+            handleFileClick(contentName)
+        }
     }
 
   render() {
@@ -41,6 +55,7 @@ export class ContentViewerContainer extends Component {
         currentFolder={this.state.currentFolder}
         folders={this.state.folders}
         files={this.state.files}
+        showThumbnails={this.state.showThumbnails}
         />
     )
   }
@@ -48,13 +63,13 @@ export class ContentViewerContainer extends Component {
   async populateContentData() {
     const response = await fetch('api/content');
     const data = await response.json();
-    this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, loading: false });
+    this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, showThumbnails: true, loading: false });
   }
 
     async rePopulateContentData(contentName, contentType) {
         const requestData = {CurrentFolderName: this.state.currentFolder, RequestFolderName: contentName, }
         const response = await fetch('api/content/folder', {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(requestData)});
         const data = await response.json();
-        this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, loading: false });
+        this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, showThumbnails: true, loading: false });
     }
 }

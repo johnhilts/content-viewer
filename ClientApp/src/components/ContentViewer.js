@@ -21,10 +21,11 @@ const renderFolders = (content, contentName, onContentClick) => {
     )
 }
 
-const renderFiles = (content, contentName, onContentClick, currentFolder) => {
+const renderFiles = (content, contentName, onContentClick, currentFolder, showThumbnails) => {
+    const contentClass = showThumbnails ? 'thumbnail' : ''
     const isImage = !contentName.endsWith('.mov')
-    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className='thumbnail' />
-    const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className='thumbnail' />
+    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} />
+    const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className={contentClass} controls />
     const renderElement = isImage ? image : video
 
     return (
@@ -36,7 +37,7 @@ const renderFiles = (content, contentName, onContentClick, currentFolder) => {
     )
 }
 
-const renderContentTable = (contentInfo, onContentClick, currentFolder) => {
+const renderContentTable = (contentInfo, onContentClick, currentFolder, showThumbnails) => {
       const getContent = (contentInfo) => {
           const isFolder = contentInfo[0].contentType === 0
           const headerTitle = isFolder
@@ -56,7 +57,7 @@ const renderContentTable = (contentInfo, onContentClick, currentFolder) => {
                           : content.name
                       return isFolder
                       ? renderFolders(content, contentName, onContentClick)
-                      : renderFiles(contentInfo, contentName, onContentClick, currentFolder)
+                      : renderFiles(contentInfo, contentName, onContentClick, currentFolder, showThumbnails)
                       }
                   )}
                 </tbody>
@@ -82,11 +83,11 @@ export default function ContentViewer(props) {
     let folderData = addReturnFolderData(props.folders)
     let folders = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(folderData, props.onContentClick, props.currentFolder);
+      : renderContentTable(folderData, props.onContentClick, props.currentFolder, props.showThumbnails);
 
     let files = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(props.files, props.onContentClick, props.currentFolder);
+      : renderContentTable(props.files, props.onContentClick, props.currentFolder, props.showThumbnails);
 
     return (
       <div>
