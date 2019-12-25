@@ -1,4 +1,7 @@
 * Convent Viewer
+* WARNING
+** This is currently very unsafe and allows navigation to any folder on its host ... 
+** Do not use this on a public host. Not even 1 time!
 ** Main Points
 This is a very simple app.
 ** Detailed Points
