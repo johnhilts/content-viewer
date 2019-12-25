@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 
+const renderButton = (content, onClick) => {
+    return (
+        <button 
+            type='button'
+            className='link-button' 
+            onClick={onClick}>
+            {content}
+        </button>
+    )
+}
+
 const renderFolders = (content, contentName, onContentClick) => {
     return (
         <tr key={content.name}>
           <td>
-              <button 
-                type="button"
-                className="link-button" 
-                onClick={onContentClick.bind(null, contentName, content.contentType)}>
-                  {content.name}
-              </button>
+            {renderButton(content.name, onContentClick.bind(null, contentName, content.contentType))}
           </td>
         </tr>
     )
@@ -24,7 +30,7 @@ const renderFiles = (content, contentName, onContentClick, currentFolder) => {
     return (
         <tr key={content.name}>
           <td>
-            {renderElement}
+            {renderButton(renderElement, onContentClick.bind(null, contentName, content.contentType))}
           </td>
         </tr>
     )
