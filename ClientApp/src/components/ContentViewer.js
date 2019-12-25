@@ -37,12 +37,15 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, showTh
     )
 }
 
-const renderContentTable = (contentInfo, onContentClick, currentFolder, showThumbnails) => {
+const renderContentTable = (contentInfo, onContentClick, currentFolder, currentFileIndex, showThumbnails) => {
       const getContent = (contentInfo) => {
           const isFolder = contentInfo[0].contentType === 0
           const headerTitle = isFolder
           ? 'Folders'
           : 'Files'
+          const viewContentInfo = currentFileIndex === -1 
+          ? contentInfo
+          : contentInfo.filter((f,i) => i === currentFileIndex)
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
                 <thead>
@@ -51,13 +54,13 @@ const renderContentTable = (contentInfo, onContentClick, currentFolder, showThum
                   </tr>
                 </thead>
                 <tbody>
-                  {contentInfo.map(content => {
+                  {viewContentInfo.map(content => {
                           const contentName = content.name === 'Go Back ...'
                           ? '..'
                           : content.name
                       return isFolder
                       ? renderFolders(content, contentName, onContentClick)
-                      : renderFiles(contentInfo, contentName, onContentClick, currentFolder, showThumbnails)
+                      : renderFiles(content, contentName, onContentClick, currentFolder, showThumbnails)
                       }
                   )}
                 </tbody>
@@ -83,11 +86,11 @@ export default function ContentViewer(props) {
     let folderData = addReturnFolderData(props.folders)
     let folders = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(folderData, props.onContentClick, props.currentFolder, props.showThumbnails);
+      : renderContentTable(folderData, props.onContentClick, props.currentFolder, props.currentFileIndex, props.showThumbnails);
 
     let files = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(props.files, props.onContentClick, props.currentFolder, props.showThumbnails);
+      : renderContentTable(props.files, props.onContentClick, props.currentFolder, props.currentFileIndex, props.showThumbnails);
 
     return (
       <div>

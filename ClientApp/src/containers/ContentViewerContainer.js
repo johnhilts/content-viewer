@@ -7,7 +7,7 @@ export class ContentViewerContainer extends Component {
     super(props);
       this.handleContentClick = this.handleContentClick.bind(this);
       this.parseParentFolder = this.parseParentFolder.bind(this);
-    this.state = { currentFolder: '', folders: [], files: [], loading: true, };
+    this.state = { currentFolder: '', folders: [], files: [], currentFileIndex: -1, loading: true, };
   }
 
   componentDidMount() {
@@ -24,7 +24,7 @@ export class ContentViewerContainer extends Component {
 
     handleContentClick(contentName, contentType, event) {
         const handleFolderClick = (contentName) => {
-            this.setState({loading: true})
+            this.setState({loading: true, currentFileIndex: -1, })
             // TODO use an extension (js has extensions??)
             const getParentFolder = contentName === '...'
             if (getParentFolder) {
@@ -34,7 +34,8 @@ export class ContentViewerContainer extends Component {
         }
 
         const handleFileClick = (contentName) => {
-            this.setState({ folders: [], files: [{name: contentName, contentType: 1}], showThumbnails: false, });
+            const currentFileIndex = this.state.files.findIndex(fi => fi.name === contentName)
+            this.setState({ currentFileIndex: currentFileIndex, showThumbnails: false, });
         }
 
         event.preventDefault();
@@ -55,6 +56,7 @@ export class ContentViewerContainer extends Component {
         currentFolder={this.state.currentFolder}
         folders={this.state.folders}
         files={this.state.files}
+        currentFileIndex={this.state.currentFileIndex}
         showThumbnails={this.state.showThumbnails}
         />
     )
