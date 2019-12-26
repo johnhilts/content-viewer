@@ -33,10 +33,17 @@ export class ContentViewerContainer extends Component {
             this.rePopulateContentData(contentName, contentType)
         }
 
+        const keepIndexInRange = (index, max) => 
+            index < 0 
+            ? max
+            : index > max 
+                ? 0
+                : index
+
         const handleFileClick = (contentName, currentFileIndex) => {
             const fileIndex = currentFileIndex === this.state.currentFileIndex 
                 ? this.state.files.findIndex(fi => fi.name === contentName)
-                : currentFileIndex
+                : keepIndexInRange(currentFileIndex, this.state.files.length-1)
             this.setState({ currentFileIndex: fileIndex, showThumbnails: false, });
         }
 

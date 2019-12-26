@@ -27,10 +27,10 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} />
     const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className={contentClass} controls />
     const renderElementType = isImage ? image : video
-    const onClick = onContentClick.bind(null, contentName, content.contentType, currentFileIndex)
-    const renderElement = renderButton(renderElementType, onClick)
-    const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Previous</span>, onClick)
-    const renderNext = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Next</span>, onClick)
+    const onClick = (fileIndex) => onContentClick.bind(null, contentName, content.contentType, fileIndex)
+    const renderElement = renderButton(renderElementType, onClick(currentFileIndex))
+    const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Previous</span>, onClick(currentFileIndex-1))
+    const renderNext = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Next</span>, onClick(currentFileIndex+1))
 
     return (
         <tr key={content.name}>
