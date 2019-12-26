@@ -21,7 +21,7 @@ const renderFolders = (content, contentName, onContentClick) => {
     )
 }
 
-const renderFiles = (content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails) => {
+const renderFiles = (content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails, onRemoveClick) => {
     const contentClass = showThumbnails ? 'thumbnail' : ''
     const isImage = !contentName.endsWith('.mov')
     const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} />
@@ -42,14 +42,14 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
                 {renderNext}
             </div>
             <div style={removeStyle}>
-                <button>Remove</button>
+                <button onClick={onRemoveClick.bind(null, currentFileIndex)}>Remove</button>
             </div>
           </td>
         </tr>
     )
 }
 
-const renderContentTable = (contentInfo, onContentClick, currentFolder, currentFileIndex, showThumbnails) => {
+const renderContentTable = (contentInfo, onContentClick, currentFolder, currentFileIndex, showThumbnails, onRemoveClick) => {
       const getContent = (contentInfo) => {
           const isFolder = contentInfo[0].contentType === 0
           const headerTitle = isFolder
@@ -72,7 +72,7 @@ const renderContentTable = (contentInfo, onContentClick, currentFolder, currentF
                           : content.name
                       return isFolder
                       ? renderFolders(content, contentName, onContentClick)
-                      : renderFiles(content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails)
+                      : renderFiles(content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails, onRemoveClick)
                       }
                   )}
                 </tbody>
@@ -102,7 +102,7 @@ export default function ContentViewer(props) {
 
     let files = props.loading
       ? <p><em>Loading...</em></p>
-      : renderContentTable(props.files, props.onContentClick, props.currentFolder, props.currentFileIndex, props.showThumbnails);
+      : renderContentTable(props.files, props.onContentClick, props.currentFolder, props.currentFileIndex, props.showThumbnails, props.onRemoveClick);
 
     return (
       <div>

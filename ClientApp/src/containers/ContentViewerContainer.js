@@ -7,6 +7,7 @@ export class ContentViewerContainer extends Component {
     super(props);
       this.handleContentClick = this.handleContentClick.bind(this);
       this.parseParentFolder = this.parseParentFolder.bind(this);
+      this.handleRemoveClick = this.handleRemoveClick.bind(this);
     this.state = { currentFolder: '', folders: [], files: [], currentFileIndex: -1, loading: true, };
   }
 
@@ -20,6 +21,11 @@ export class ContentViewerContainer extends Component {
             return '';
         }
         return folders.filter((f,i) => i < folders.length).reduce((a, f) => a + '/' + f)
+    }
+
+    handleRemoveClick(currentFileIndex, event) {
+        const contentName = this.state.files[currentFileIndex].name
+        this.removeContentData(contentName)
     }
 
     handleContentClick(contentName, contentType, currentFileIndex, event) {
@@ -61,6 +67,7 @@ export class ContentViewerContainer extends Component {
     return (
       <ContentViewer
         onContentClick={this.handleContentClick}
+        onRemoveClick={this.handleRemoveClick}
         loading={this.state.loading}
         currentFolder={this.state.currentFolder}
         folders={this.state.folders}
@@ -82,5 +89,12 @@ export class ContentViewerContainer extends Component {
         const response = await fetch('api/content/folder', {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(requestData)});
         const data = await response.json();
         this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, showThumbnails: true, loading: false });
+    }
+
+    async removeContentData(contentName) {
+        const requestData = {CurrentFolderName: this.state.currentFolder, RequestFileName: contentName, }
+        const response = await fetch('api/content/folder', {method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(requestData)});
+        const data = await response.json();
+        this.setState({ files: data.files, });
     }
 }

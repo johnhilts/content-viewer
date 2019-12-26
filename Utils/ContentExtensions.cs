@@ -14,7 +14,8 @@ namespace dotnet.Utils
 
         public static bool Exists(this string path)
         {
-            return Directory.Exists(path);
+            return Directory.Exists(path)
+                || File.Exists(path);
         }
 
         public static IEnumerable<ContentModel> GetFolders(this string currentFolder)

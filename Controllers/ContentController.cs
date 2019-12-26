@@ -50,6 +50,23 @@ namespace dotnet.Controllers
             return Ok(await GetContentModel(currentRequestFolder));
         }
 
+        [HttpDelete]
+        [Route("folder")]
+        public async Task<IActionResult> Delete([FromBody]RequestDeleteModel model)
+        {
+            var currentRequestFolder = GetCurrentRequestFolder(new RequestModel{CurrentFolderName=model.CurrentFolderName, RequestFolderName=string.Empty});
+            if (!currentRequestFolder.Exists()) 
+                return NotFound();
+
+            var file = Path.Combine(currentRequestFolder, model.RequestFileName);
+            if (!file.Exists()) 
+                return NotFound();
+
+            // TODO flag file as "deleted"
+
+            return Ok(await GetContentModel(currentRequestFolder));
+        }
+
         private string GetCurrentRequestFolder(RequestModel model)
         {
             return $"{_contentModel.Root}/{model.CurrentFolderName}/{model.RequestFolderName}";
