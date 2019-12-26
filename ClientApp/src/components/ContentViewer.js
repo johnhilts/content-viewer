@@ -31,13 +31,19 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const renderElement = renderButton(renderElementType, onClick(currentFileIndex))
     const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Previous</span>, onClick(currentFileIndex-1))
     const renderNext = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Next</span>, onClick(currentFileIndex+1))
+    const removeStyle = showThumbnails ? {margin: '10px 10px 10px 10px'} : {textAlign:'center', margin: '10px 10px 10px 10px'}
 
     return (
         <tr key={content.name}>
           <td>
-            {renderPrevious}
-            {renderElement}
-            {renderNext}
+            <div>
+                {renderPrevious}
+                {renderElement}
+                {renderNext}
+            </div>
+            <div style={removeStyle}>
+                <button>Remove</button>
+            </div>
           </td>
         </tr>
     )
