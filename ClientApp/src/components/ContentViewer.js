@@ -15,7 +15,7 @@ const renderFolders = (content, contentName, onContentClick) => {
     return (
         <tr key={content.name}>
           <td>
-            {renderButton(content.name, onContentClick.bind(null, contentName, content.contentType))}
+            {renderButton(content.name, onContentClick.bind(null, contentName, content.contentType, null))}
           </td>
         </tr>
     )

@@ -34,8 +34,10 @@ export class ContentViewerContainer extends Component {
         }
 
         const handleFileClick = (contentName, currentFileIndex) => {
-            const currentFileIndex = this.state.files.findIndex(fi => fi.name === contentName)
-            this.setState({ currentFileIndex: currentFileIndex, showThumbnails: false, });
+            const fileIndex = currentFileIndex === this.state.currentFileIndex 
+                ? this.state.files.findIndex(fi => fi.name === contentName)
+                : currentFileIndex
+            this.setState({ currentFileIndex: fileIndex, showThumbnails: false, });
         }
 
         event.preventDefault();
@@ -44,7 +46,7 @@ export class ContentViewerContainer extends Component {
             handleFolderClick(contentName)
         }
         else {
-            handleFileClick(contentName)
+            handleFileClick(contentName, currentFileIndex)
         }
     }
 
