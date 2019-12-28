@@ -69,7 +69,9 @@ namespace dotnet.Controllers
 
         private string GetCurrentRequestFolder(RequestModel model)
         {
-            return $"{_contentModel.Root}/{model.CurrentFolderName}/{model.RequestFolderName}";
+            var currentFolder = $"{_contentModel.Root}/{model.CurrentFolderName}";
+            var requestFolder = model.RequestFolderName?.Length > 0 ? $"/{model.RequestFolderName}" : string.Empty;
+            return $"{currentFolder}{requestFolder}";
         }
 
         private async Task<ResponseModel> GetContentModel(string currentRequestFolder)
