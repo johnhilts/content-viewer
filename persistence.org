@@ -1,0 +1,25 @@
+* Thoughts on saving file info ...
+
+right now, we populate file info based on System.IO.Directory.GetFiles()
+=return files.Select(s => new ContentModel {Name = Path.GetFileName(s), ContentType = ContentType.File, });=
+we can try something like ...
++ add a property to ContentModel: IsDeleted
++ When we run GetFiles (an extension method!), we can filter out anything that has previously been set to IsDeleted
+we can put a json file in a configured folder
+that file can have one entry for each file
+
+** write the json
+we can update the json whenever we do a put or delete
+we probably need a different model especially for the json
+#+BEGIN_SRC 
+class ContentPersistenceModel
+  class FileModel
+     string Name
+     bool IsDeleted
+  class FolderModel
+    string Name
+    List<FileModel> Files
+  List<FolderModel> Folders
+#+END_SRC
+names of folders and files should be unique
+it would be good if we could get rid of the doubling up of path separators ...
