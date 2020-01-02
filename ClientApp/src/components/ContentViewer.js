@@ -42,7 +42,7 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
                 {renderNext}
             </div>
             <div style={removeStyle}>
-                <button onClick={onRemoveClick.bind(null, currentFileIndex)}>Remove</button>
+                <button onClick={onRemoveClick.bind(null, contentName)}>Remove</button>
             </div>
           </td>
         </tr>

@@ -63,9 +63,19 @@ namespace dotnet.Controllers
             if (!file.Exists()) 
                 return NotFound();
 
-            // TODO flag file as "deleted"
+            await FlagFileForDeletion(currentRequestFolder, model.RequestFileName);
 
             return Ok(await GetContentModel(currentRequestFolder));
+        }
+
+        private async Task FlagFileForDeletion(string currentRequestFolder, string deleteFileName)
+        {
+            var infoFileName = Path.Combine(currentRequestFolder, _infoFileName);
+            if (!infoFileName.Exists()) return; // NOTE: if for some reason I can't find the info file I can't do anything further...
+
+            var folderInfo = JsonSerializer.Deserialize<FolderInfoModel>((await System.IO.File.ReadAllTextAsync(infoFileName)));
+            folderInfo.Files.Single(file => file.Name == deleteFileName).IsDeleted = true;
+            await System.IO.File.WriteAllTextAsync(infoFileName, JsonSerializer.Serialize(folderInfo));
         }
 
         private string GetCurrentRequestFolder(RequestModel model)
@@ -83,9 +93,12 @@ namespace dotnet.Controllers
             var folders = currentRequestFolder.GetFolders();
             var files = currentRequestFolder.GetFiles();
             await UpdateInfo(currentRequestFolder, files.Select(file => file.Name));
+            var deletedFiles = await GetDeletedFiles(currentRequestFolder);
+            // TODO: really wanted to use .Except here to filter ...
+            var filteredFiles = files.Where(file => !deletedFiles.Any(deleted => deleted.Name == file.Name));
             var links = new StringDictionary {{"Folder", "api/content/folder"}, };
             Console.WriteLine($"current folder: {currentFolder}");
-            return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = folders, Files = files, Links = links, };
+            return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = folders, Files = filteredFiles, Links = links, };
         }
 
         private readonly string _infoFileName = ".info.json";
@@ -97,6 +110,15 @@ namespace dotnet.Controllers
             var folderInfo = new FolderInfoModel {Files = files.Select(file => new FileInfoModel { Name = file })};
 
             await System.IO.File.WriteAllTextAsync(infoFileName, JsonSerializer.Serialize(folderInfo));
+        }
+
+        private async Task<IEnumerable<FileInfoModel>> GetDeletedFiles(string currentRequestFolder)
+        {
+            var infoFileName = Path.Combine(currentRequestFolder, _infoFileName);
+            // if (!infoFileName.Exists()) return; // NOTE: if for some reason I can't find the info file I can't do anything further...
+
+            var folderInfo = JsonSerializer.Deserialize<FolderInfoModel>((await System.IO.File.ReadAllTextAsync(infoFileName)));
+            return folderInfo.Files.Where(file => file.IsDeleted);
         }
 
     }

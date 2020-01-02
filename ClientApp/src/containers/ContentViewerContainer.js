@@ -23,8 +23,7 @@ export class ContentViewerContainer extends Component {
         return folders.filter((f,i) => i < folders.length).reduce((a, f) => a + '/' + f)
     }
 
-    handleRemoveClick(currentFileIndex, event) {
-        const contentName = this.state.files[currentFileIndex].name
+    handleRemoveClick(contentName, event) {
         this.removeContentData(contentName)
     }
 
