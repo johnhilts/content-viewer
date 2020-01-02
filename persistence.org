@@ -23,3 +23,22 @@ class ContentPersistenceModel
 #+END_SRC
 names of folders and files should be unique
 it would be good if we could get rid of the doubling up of path separators ...
+
+
+in each folder we can have a =.info.json= file
+inside of it, we can have an entry for each file that we have modified or deleted, or maybe even *read* (exinfo, etc)
+#+BEGIN_SRC 
+public class FileModel
+{
+  public string Name {get; set;}
+  public bool IsDeleted {get; set;}
+}
+#+END_SRC
+
+* use cases
++ create new =.info.json= (but when?)
+*if =.info.json= doesn't exist*
++ update =.info.json= to set exinfo *would be part of creation*
++ update =.info.json= to add any new files (very rare in reality)
++ update =.info.json= to set IsDeleted flag
+

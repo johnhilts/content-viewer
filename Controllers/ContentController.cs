@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -81,8 +82,21 @@ namespace dotnet.Controllers
             var currentFolder = currentRequestFolder.MapContentFolder();
             var folders = currentRequestFolder.GetFolders();
             var files = currentRequestFolder.GetFiles();
+            await UpdateInfo(currentRequestFolder, files.Select(file => file.Name));
             var links = new StringDictionary {{"Folder", "api/content/folder"}, };
+            Console.WriteLine($"current folder: {currentFolder}");
             return new ResponseModel {Id = updatedSession.SessionId, CurrentFolder = currentFolder, Folders = folders, Files = files, Links = links, };
+        }
+
+        private readonly string _infoFileName = ".info.json";
+        private async Task UpdateInfo(string currentRequestFolder, IEnumerable<string> files)
+        {
+            var infoFileName = Path.Combine(currentRequestFolder, _infoFileName);
+            if (infoFileName.Exists()) return;
+
+            var folderInfo = new FolderInfoModel {Files = files.Select(file => new FileInfoModel { Name = file })};
+
+            await System.IO.File.WriteAllTextAsync(infoFileName, JsonSerializer.Serialize(folderInfo));
         }
 
     }
