@@ -1,0 +1,6 @@
+* Bugs
+** TODO Deleting a file messes up filtering for everything
+
+* Refactoring
+** TODO make a =Read= and =Write= extension for handling the =_info.json= file
+
