@@ -21,13 +21,13 @@ namespace dotnet.Utils
         public static IEnumerable<ContentModel> GetFolders(this string currentFolder)
         {
             var folders = Directory.GetDirectories(currentFolder);
-            return folders.Select(s => new ContentModel {Name = Path.GetFileName(s), ContentType = ContentType.Folder, });
+            return folders.Select(folder => new ContentModel {Name = Path.GetFileName(folder), ContentType = ContentType.Folder, });
         }
 
         public static IEnumerable<ContentModel> GetFiles(this string currentFolder)
         {
             var files = Directory.GetFiles(currentFolder);
-            return files.Select(s => new ContentModel {Name = Path.GetFileName(s), ContentType = ContentType.File, });
+            return files.Where(file => !file.Contains(@"/.")).Select(file => new ContentModel {Name = Path.GetFileName(file), ContentType = ContentType.File, });
         }
 
     }
