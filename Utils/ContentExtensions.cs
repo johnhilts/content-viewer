@@ -26,8 +26,8 @@ namespace dotnet.Utils
 
         public static IEnumerable<ContentModel> GetFiles(this string currentFolder)
         {
-            var files = Directory.GetFiles(currentFolder);
-            return files.Where(file => !file.Contains(@"/.")).Select(file => new ContentModel {Name = Path.GetFileName(file), ContentType = ContentType.File, });
+            var fileNames = Directory.GetFiles(currentFolder).Select(file => Path.GetFileName(file));
+            return fileNames.Where(file => !file.StartsWith(@".")).Select(fileName => new ContentModel {Name = fileName, ContentType = ContentType.File, });
         }
 
     }
