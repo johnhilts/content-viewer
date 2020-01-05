@@ -26,8 +26,15 @@ namespace dotnet.Utils
 
         public static IEnumerable<ContentModel> GetFiles(this string currentFolder)
         {
-            var fileNames = Directory.GetFiles(currentFolder).Select(file => Path.GetFileName(file));
-            return fileNames.Where(file => !file.StartsWith(@".")).Select(fileName => new ContentModel {Name = fileName, ContentType = ContentType.File, });
+            return Directory.GetFiles(currentFolder)
+                .Where(file => !Path.GetFileName(file).StartsWith(@"."))
+                .Select(file => 
+                        new ContentModel 
+                        {
+                            Name = Path.GetFileName(file), 
+                            ContentType = ContentType.File, 
+                            Created = File.GetCreationTime(file).ToShortDateString(),
+                        });
         }
 
     }

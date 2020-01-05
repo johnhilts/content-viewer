@@ -30,7 +30,7 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const onClick = (fileIndex) => onContentClick.bind(null, contentName, content.contentType, fileIndex)
     const renderElement = renderButton(renderElementType, onClick(currentFileIndex))
     const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Previous</span>, onClick(currentFileIndex-1))
-    const renderNext = showThumbnails ? <span>&nbsp;</span> : renderButton(<span>Next</span>, onClick(currentFileIndex+1))
+    const renderNext = showThumbnails ? <div><div style={{marginLeft:'10px'}}>{content.name}</div><div>{content.created}</div></div> : renderButton(<span>Next</span>, onClick(currentFileIndex+1))
     const removeStyle = showThumbnails ? {margin: '10px 10px 10px 10px'} : {textAlign:'center', margin: '10px 10px 10px 10px'}
 
     return (
