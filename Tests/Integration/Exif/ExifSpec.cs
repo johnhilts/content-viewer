@@ -15,18 +15,18 @@ namespace ez7zu6.Integration.Experience
             context["exif info from photo"] = () =>
             {
                 var testFile = @"/home/dotnet/wwwroot/content/photos/TestImage.JPG";
-                itAsync["can extract latitude and longitude"] = async () =>
+                it["can extract latitude and longitude"] = () =>
                 {
                     var expected = @"N 33 53' 2.2"", E 130 52' 0.7""";
                     var helper = new ExInfoHelper();
-                    var actual = await helper.ExtractGeoCoordinates(testFile);
+                    var actual = helper.ExtractGeoCoordinates(testFile);
                     actual.Should().Be(expected);
                 };
-                itAsync["can extract decimal coordinates"] = async () =>
+                it["can extract decimal coordinates"] = () =>
                 {
-                    var expected = (33.000611111111111, 130.00019444444445);
+                    var expected = (33.883938943142361111111111111m, 130.86684746093750000000000000m);
                     var helper = new ExInfoHelper();
-                    var actual = await helper.ExtractGeoDecimalCoordinates(testFile);
+                    var actual = helper.ExtractGeoDecimalCoordinates(testFile);
                     actual.Should().Be(expected);
                 };
             };
