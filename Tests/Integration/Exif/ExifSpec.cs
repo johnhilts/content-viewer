@@ -19,14 +19,14 @@ namespace ez7zu6.Integration.Experience
                 {
                     var expected = @"N 33 53' 2.2"", E 130 52' 0.7""";
                     var helper = new ExInfoHelper();
-                    var actual = helper.ExtractGeoCoordinates(testFile);
+                    var actual = helper.ExtractGeoCoordinatesText(testFile);
                     actual.Should().Be(expected);
                 };
                 it["can extract decimal coordinates"] = () =>
                 {
                     var expected = (33.883938943142361111111111111m, 130.86684746093750000000000000m);
                     var helper = new ExInfoHelper();
-                    var actual = helper.ExtractGeoDecimalCoordinates(testFile);
+                    var actual = helper.ExtractGeoCoordinates(testFile);
                     actual.Should().Be(expected);
                 };
             };
