@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -73,9 +72,9 @@ namespace dotnet.Controllers
             var infoFileName = Path.Combine(currentRequestFolder, _infoFileName);
             if (!infoFileName.Exists()) return; // NOTE: if for some reason I can't find the info file I can't do anything further...
 
-            var folderInfo = JsonSerializer.Deserialize<FolderInfoModel>((await System.IO.File.ReadAllTextAsync(infoFileName)));
+            var folderInfo = await infoFileName.ReadJson<FolderInfoModel>();
             folderInfo.Files.Single(file => file.Name == deleteFileName).IsDeleted = true;
-            await System.IO.File.WriteAllTextAsync(infoFileName, JsonSerializer.Serialize(folderInfo));
+            await infoFileName.WriteJson(folderInfo);
         }
 
         private string GetCurrentRequestFolder(RequestModel model)
@@ -109,7 +108,7 @@ namespace dotnet.Controllers
 
             var folderInfo = new FolderInfoModel {Files = files.Select(file => new FileInfoModel { Name = file })};
 
-            await System.IO.File.WriteAllTextAsync(infoFileName, JsonSerializer.Serialize(folderInfo));
+            await infoFileName.WriteJson(folderInfo);
         }
 
         private async Task<IEnumerable<FileInfoModel>> GetDeletedFiles(string currentRequestFolder)
@@ -117,7 +116,7 @@ namespace dotnet.Controllers
             var infoFileName = Path.Combine(currentRequestFolder, _infoFileName);
             // if (!infoFileName.Exists()) return; // NOTE: if for some reason I can't find the info file I can't do anything further...
 
-            var folderInfo = JsonSerializer.Deserialize<FolderInfoModel>((await System.IO.File.ReadAllTextAsync(infoFileName)));
+            var folderInfo = await infoFileName.ReadJson<FolderInfoModel>();
             return folderInfo.Files.Where(file => file.IsDeleted);
         }
 
