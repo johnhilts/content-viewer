@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using dotnet.Models;
+using dotnet.Libraries.Utilities;
 
 namespace dotnet.Utils
 {
@@ -34,6 +35,7 @@ namespace dotnet.Utils
                             Name = Path.GetFileName(file), 
                             ContentType = ContentType.File, 
                             Created = File.GetCreationTime(file).ToShortDateString(),
+                            GeoCoordinateText = (new ExInfoHelper()).ExtractGeoCoordinatesText(file),
                         });
         }
 

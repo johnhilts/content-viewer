@@ -5,6 +5,7 @@ namespace dotnet.Models
         public string Name {get; set;}
         public ContentType ContentType  {get; set;}
         public string Created {get; set;}
+        public string GeoCoordinateText {get; set;}
     }
 }
 
