@@ -22,7 +22,7 @@ const renderFolders = (content, contentName, onContentClick) => {
 }
 
 const renderFiles = (content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails, onRemoveClick) => {
-    const contentClass = showThumbnails ? 'thumbnail' : ''
+    const contentClass = showThumbnails ? 'thumbnail' : 'responsiveImageLarge'
     const isImage = !contentName.endsWith('.mov')
     const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} />
     const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className={contentClass} controls />
