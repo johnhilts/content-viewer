@@ -21,19 +21,22 @@ namespace dotnet.Libraries.Utilities
                 return (0, 0);
 
             var location = ExtractLocation(fileName);
-            return 
-                (
-                 location.Latitude.Degrees + location.Latitude.Minutes/60 + location.Latitude.Seconds/3600, 
-                 location.Longitude.Degrees + location.Longitude.Minutes/60 + location.Longitude.Seconds/3600
-                );
+            return (location.Latitude == null || location.Longitude == null)
+                ? (0, 0)
+                : (
+                    location.Latitude.Degrees + location.Latitude.Minutes/60 + location.Latitude.Seconds/3600, 
+                    location.Longitude.Degrees + location.Longitude.Minutes/60 + location.Longitude.Seconds/3600
+                  );
         }
 
         private string ExtractData(string fileName)
         {
             if (fileName.ToLower().EndsWith(".jpg") || fileName.ToLower().EndsWith(".jpeg") || fileName.ToLower().EndsWith("mov"))
             {
-                var model = ExtractLocation(fileName);
-                return $"{FormatLocation(model.Latitude)}, {FormatLocation(model.Longitude)}";
+                var location = ExtractLocation(fileName);
+                return (location.Latitude == null || location.Longitude == null)
+                    ? string.Empty
+                    : $"{FormatLocation(location.Latitude)}, {FormatLocation(location.Longitude)}";
             }
             else
                 return string.Empty;
@@ -41,9 +44,14 @@ namespace dotnet.Libraries.Utilities
 
         private string FormatLocation(GeoCoordinateModel location)
         {
-            return location.Seconds == 0
+            string GetFormattedLocation() =>
+                location.Seconds == 0
                 ? $"{location.Direction} {location.Degrees} {location.Minutes:0.###}'"
                 : $"{location.Direction} {location.Degrees} {location.Minutes:0}' {location.Seconds:0.#}\"";
+
+            return location == null
+                ? string.Empty
+                : GetFormattedLocation();
         }
 
         private GeoCoordinatePairModel ExtractLocation(string fileName)
