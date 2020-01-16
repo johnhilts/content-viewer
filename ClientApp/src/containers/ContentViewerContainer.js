@@ -8,7 +8,7 @@ export class ContentViewerContainer extends Component {
       this.handleContentClick = this.handleContentClick.bind(this);
       this.parseParentFolder = this.parseParentFolder.bind(this);
       this.handleRemoveClick = this.handleRemoveClick.bind(this);
-    this.state = { currentFolder: '', folders: [], files: [], currentFileIndex: -1, loading: true, };
+      this.state = { currentFolder: '', folders: [], files: [], currentFileIndex: -1, loading: true, rotateDegrees: 0, };
   }
 
   componentDidMount() {
@@ -27,7 +27,7 @@ export class ContentViewerContainer extends Component {
         this.removeContentData(contentName)
     }
 
-    handleContentClick(contentName, contentType, currentFileIndex, event) {
+    handleContentClick(contentName, contentType, currentFileIndex, rotateDegrees, event) {
         const handleFolderClick = (contentName) => {
             this.setState({loading: true, currentFileIndex: -1, })
             // TODO use an extension (js has extensions??)
@@ -45,11 +45,11 @@ export class ContentViewerContainer extends Component {
                 ? 0
                 : index
 
-        const handleFileClick = (contentName, currentFileIndex) => {
+        const handleFileClick = (contentName, currentFileIndex, rotateDegrees) => {
             const fileIndex = currentFileIndex === this.state.currentFileIndex 
                 ? this.state.files.findIndex(fi => fi.name === contentName)
                 : keepIndexInRange(currentFileIndex, this.state.files.length-1)
-            this.setState({ currentFileIndex: fileIndex, showThumbnails: false, });
+            this.setState({ currentFileIndex: fileIndex, showThumbnails: false, rotateDegrees, });
         }
 
         event.preventDefault();
@@ -58,7 +58,7 @@ export class ContentViewerContainer extends Component {
             handleFolderClick(contentName)
         }
         else {
-            handleFileClick(contentName, currentFileIndex)
+            handleFileClick(contentName, currentFileIndex, rotateDegrees ? rotateDegrees : 0)
         }
     }
 
@@ -73,15 +73,16 @@ export class ContentViewerContainer extends Component {
         files={this.state.files}
         currentFileIndex={this.state.currentFileIndex}
         showThumbnails={this.state.showThumbnails}
+        rotateDegrees={this.state.rotateDegrees}
         />
     )
   }
 
-  async populateContentData() {
-    const response = await fetch('api/content');
-    const data = await response.json();
-    this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, showThumbnails: true, loading: false });
-  }
+    async populateContentData() {
+        const response = await fetch('api/content');
+        const data = await response.json();
+        this.setState({ currentFolder: data.currentFolder, folders: data.folders, files: data.files, showThumbnails: true, loading: false });
+    }
 
     async rePopulateContentData(contentName, contentType) {
         const requestData = {CurrentFolderName: this.state.currentFolder, RequestFolderName: contentName, }

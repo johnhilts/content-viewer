@@ -38,13 +38,22 @@ code {
     max-width: 100%;
 }
 
-div.rotate_right {
+rotate_right {
     /* float: left; */
     transform: rotate(90deg);
 }
 
-div.rotate_left {
+rotate_left {
     /* float: left; */
     transform: rotate(-90deg);
+}
+
+.spacer {
+    margin: 10px 10px 10px 10px;
+}
+
+.centeredSpacer {
+    text-align: center;
+    margin: 10px 10px 10px 10px;
 }
 
