@@ -28,9 +28,12 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const photoContainer = document.getElementById('photoContainer')
     const maxHeight = photoContainer ? photoContainer.clientHeight : 800
     const maxWidth = photoContainer ? photoContainer.clientWidth : 1000
-    const contentClass = showThumbnails ? 'thumbnail' : '' // 'responsiveImageLarge'
+    const contentClass = showThumbnails ? 'thumbnail' : 'responsiveImageLarge'
     const isImage = !contentName.endsWith('.mov')
-    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} style={{transform: `rotate(${rotateDegrees}deg)`, maxHeight: `${maxHeight}px`, maxWidth: 'auto'}} />
+    const style = rotateDegrees 
+        ? {transform: `rotate(${rotateDegrees}deg)`, maxHeight: `${maxHeight}px`, maxWidth: 'auto', marginTop: '30%', }
+        : {transform: `rotate(${rotateDegrees}deg)`, }
+    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} style={style} />
     const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className={contentClass} controls />
     const renderElementType = isImage ? image : video
     const onClick = (fileIndex, rotateDegrees) => onContentClick.bind(null, contentName, content.contentType, fileIndex, rotateDegrees)
