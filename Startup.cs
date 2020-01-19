@@ -42,7 +42,7 @@ namespace dotnet
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.MapWhen(context => context.Request.Query.ContainsKey("branch"),
+            app.MapWhen(context => context.Request.Path.ToString().ToLower().Contains("jpg"),
                     appBranch => {
                         appBranch.UseImageHandler();
                     });
