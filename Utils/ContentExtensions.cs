@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -30,13 +31,26 @@ namespace dotnet.Utils
             return Directory.GetFiles(currentFolder)
                 .Where(file => !Path.GetFileName(file).StartsWith(@"."))
                 .Select(file => 
-                        new ContentModel 
+                    {
+                        var geoCoordinateText = string.Empty;
+                        try
                         {
-                            Name = Path.GetFileName(file), 
-                            ContentType = ContentType.File, 
-                            Created = File.GetCreationTime(file).ToShortDateString(),
-                            GeoCoordinateText = (new ExInfoHelper()).ExtractGeoCoordinatesText(file),
-                        });
+                            geoCoordinateText = (new ExInfoHelper()).ExtractGeoCoordinatesText(file);
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine($"file io error: {exception.ToString()}");
+                        }
+                        return 
+                            new ContentModel 
+                            {
+                                Name = Path.GetFileName(file), 
+                                ContentType = ContentType.File, 
+                                Created = File.GetCreationTime(file).ToShortDateString(),
+                                GeoCoordinateText = geoCoordinateText,
+                            };
+                    }
+                   );
         }
 
     }

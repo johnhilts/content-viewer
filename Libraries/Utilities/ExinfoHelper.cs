@@ -83,7 +83,7 @@ namespace dotnet.Libraries.Utilities
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error opening {0} image may be corupted, {1}", fileName, ex.Message);
+                Console.WriteLine($"ERROR opening {fileName} image may be corupted, {ex.Message}");
                 throw;
             }
 
