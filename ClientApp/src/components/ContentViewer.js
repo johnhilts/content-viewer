@@ -30,10 +30,13 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const maxWidth = photoContainer ? photoContainer.clientWidth : 1000
     const contentClass = showThumbnails ? 'thumbnail' : 'responsiveImageLarge'
     const isImage = !contentName.endsWith('.mov')
-    const style = rotateDegrees 
-        ? {transform: `rotate(${rotateDegrees}deg)`, maxHeight: `${maxHeight}px`, maxWidth: 'auto', marginTop: '30%', }
+    const imageStyle = rotateDegrees 
+        ? {transform: `rotate(${rotateDegrees}deg)`, maxHeight: `${maxHeight}px`, maxWidth: 'auto', marginTop: '15%', }
         : {transform: `rotate(${rotateDegrees}deg)`, }
-    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} style={style} />
+    const image = <img src={`content/${currentFolder}/${contentName}`} alt={contentName} className={contentClass} style={imageStyle} />
+    const imageContainerStyle = rotateDegrees
+        ? {height: `${maxHeight + 200}px`}
+        : {height: 'auto'}
     const video = <video src={`content/${currentFolder}/${contentName}`} title={contentName} className={contentClass} controls />
     const renderElementType = isImage ? image : video
     const onClick = (fileIndex, rotateDegrees) => onContentClick.bind(null, contentName, content.contentType, fileIndex, rotateDegrees)
@@ -45,7 +48,7 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     return (
         <tr key={content.name}>
           <td>
-            <div id='photoContainer'>
+            <div id='photoContainer' style={imageContainerStyle}>
                 {renderPrevious}
                 {renderElement}
                 {renderNext}

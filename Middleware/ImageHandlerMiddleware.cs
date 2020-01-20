@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -10,6 +11,8 @@ namespace dotnet.Middleware
 {
     public class ImageHandlerMiddleware
     {
+        private readonly int _maxWidth = 600;
+        private readonly int _maxHeight = 400;
 
         // Must have constructor with this signature, otherwise exception at run time
         public ImageHandlerMiddleware(RequestDelegate next)
@@ -25,12 +28,20 @@ namespace dotnet.Middleware
             FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             using (var image = Image.FromStream(fs))
             {
-                var resizedImage = Resize(image, 200, 200, RotateFlipType.RotateNoneFlipNone);
+                var resizeDimensions = GetResizeDimensions(image);
+                var resizedImage = Resize(image, resizeDimensions.Width, resizeDimensions.Height, RotateFlipType.RotateNoneFlipNone);
                 var imageBytes = ImageToByteArray(resizedImage, "jpg", null);
                 context.Response.ContentType = GetContentType();
                 context.Response.ContentLength = imageBytes.Length;
                 await context.Response.Body.WriteAsync(imageBytes, 0, imageBytes.Length);
             }
+        }
+
+        private (int Width, int Height) GetResizeDimensions(Image image)
+        {
+            var width = (int)image.Width;
+            var height = (int)image.Height;
+            return (Math.Min(width, _maxWidth), Math.Min(height, _maxHeight));
         }
 
         private string GetContentType()
