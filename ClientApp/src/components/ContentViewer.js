@@ -38,9 +38,14 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const renderElementType = isImage ? image : video
     const onClick = (fileIndex, rotateDegrees) => onContentClick.bind(null, contentName, content.contentType, fileIndex, rotateDegrees)
     const renderElement = renderButton(renderElementType, onClick(currentFileIndex))
-    const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span className='spacer'><i class="fas fa-arrow-left"></i></span>, onClick(currentFileIndex-1))
-    const renderNext = showThumbnails ? <div><div style={{marginLeft:'10px'}}>{content.name}</div><div>{content.created}</div><div>{content.geoCoordinateText}</div></div> : renderButton(<span className='spacer'><i class="fas fa-arrow-right"></i></span>, onClick(currentFileIndex+1))
+    const renderPrevious = showThumbnails 
+        ? <span>&nbsp;</span> 
+        : renderButton(<span className='spacer'><i class="fas fa-arrow-left"></i></span>, onClick(currentFileIndex-1))
+    const renderNext = showThumbnails 
+        ? <div><div style={{marginLeft:'10px'}}>{content.name}</div><div>{content.created}</div><div>{content.geoCoordinateText}</div></div> 
+        : renderButton(<span className='spacer'><i class="fas fa-arrow-right"></i></span>, onClick(currentFileIndex+1))
     const removeStyle = showThumbnails ? 'spacer' : 'centeredSpacer'
+    const details = showThumbnails ? <span>&nbsp;</span> : <div style={{textAlign:'center'}}><div>{content.created}</div><div>{content.geoCoordinateText}</div></div>
 
     return (
         <tr key={content.name}>
@@ -50,6 +55,7 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
                 {renderElement}
                 {renderNext}
             </div>
+            {details}
             <div className={removeStyle}>
                 <span className={removeStyle}>{renderButton(<i class="fas fa-redo-alt"></i>, onClick(currentFileIndex, 90))}</span>
                 <span className={removeStyle}><button onClick={onRemoveClick.bind(null, contentName)}><i class="fas fa-trash-alt"></i></button></span>
