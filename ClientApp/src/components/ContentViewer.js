@@ -20,10 +20,7 @@ const renderFolders = (content, contentName, onContentClick) => {
         </tr>
     )
 }
-// my idea:
-// button hits handler
-// the handler (in the container) changes state + or - 90 (we'll put the degrees in state)
-// instead of using a class defined in css, we'll add a STYLE whose content we dynamically set
+
 const renderFiles = (content, contentName, onContentClick, currentFolder, currentFileIndex, showThumbnails, onRemoveClick, rotateDegrees) => {
     const photoContainer = document.getElementById('photoContainer')
     const maxHeight = photoContainer ? photoContainer.clientHeight : 800
@@ -41,8 +38,8 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
     const renderElementType = isImage ? image : video
     const onClick = (fileIndex, rotateDegrees) => onContentClick.bind(null, contentName, content.contentType, fileIndex, rotateDegrees)
     const renderElement = renderButton(renderElementType, onClick(currentFileIndex))
-    const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span className='spacer'>Previous</span>, onClick(currentFileIndex-1))
-    const renderNext = showThumbnails ? <div><div style={{marginLeft:'10px'}}>{content.name}</div><div>{content.created}</div><div>{content.geoCoordinateText}</div></div> : renderButton(<span className='spacer'>Next</span>, onClick(currentFileIndex+1))
+    const renderPrevious = showThumbnails ? <span>&nbsp;</span> : renderButton(<span className='spacer'><i class="fas fa-arrow-left"></i></span>, onClick(currentFileIndex-1))
+    const renderNext = showThumbnails ? <div><div style={{marginLeft:'10px'}}>{content.name}</div><div>{content.created}</div><div>{content.geoCoordinateText}</div></div> : renderButton(<span className='spacer'><i class="fas fa-arrow-right"></i></span>, onClick(currentFileIndex+1))
     const removeStyle = showThumbnails ? 'spacer' : 'centeredSpacer'
 
     return (
@@ -54,9 +51,9 @@ const renderFiles = (content, contentName, onContentClick, currentFolder, curren
                 {renderNext}
             </div>
             <div className={removeStyle}>
-                <span className={removeStyle}>{renderButton(<span>Rotate Left</span>, onClick(currentFileIndex, 90))}</span>
-                <span className={removeStyle}><button onClick={onRemoveClick.bind(null, contentName)}>Remove</button></span>
-                <span className={removeStyle}>{renderButton(<span>Rotate Right</span>, onClick(currentFileIndex, -90))}</span>
+                <span className={removeStyle}>{renderButton(<i class="fas fa-redo-alt"></i>, onClick(currentFileIndex, 90))}</span>
+                <span className={removeStyle}><button onClick={onRemoveClick.bind(null, contentName)}><i class="fas fa-trash-alt"></i></button></span>
+                <span className={removeStyle}>{renderButton(<i class="fas fa-undo"></i>, onClick(currentFileIndex, -90))}</span>
             </div>
           </td>
         </tr>
