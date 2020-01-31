@@ -65,4 +65,5 @@ const getReverseGeocodingFromCache = (lat, lon) => {
     return fileContents.filter(entry => entry.lon == lon)
   }
   return null
+}
 #+END_SRC
