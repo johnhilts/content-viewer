@@ -1,6 +1,68 @@
 * Bugs
-** TODO Deleting a file messes up filtering for everything
+** DONE Deleting a file messes up filtering for everything
+
+** TODO Security vulnerability - you can break out of the wwwroot folder and go whereever you want
 
 * Refactoring
-** TODO make a =Read= and =Write= extension for handling the =_info.json= file
+** DONE make a =Read= and =Write= extension for handling the =_info.json= file
 
+* Features
+** TODO File based caching
+*** Why?
+I want to try a different type of caching
++ Cache puts pressure on memory
++ redis is overkill for this personal project
++ but, I still want to cache a lot of information, particularly results from reverse geocoding which is no longer free after a certain threshold.
+  + I might not ever actually hit the threshold, but I don't want to have to worry about running tests, etc, and going over the limit
++ I have tons of disk space! Way more than memory,so why not use that?
++ Is file I/O really that much slower than a web request?!?
+*** How?
+To wit, this is a very special purpose cache, meant for reverse geocoding results!
++ Geocoding is always in the lat/long pattern.
++ So, save each floor(lat)s as a folder.
++ In that folder, save files as lat - floor(lat)
++ In each file, store the longitudes.
+*** Usage
+#+BEGIN_SRC javascript
+const getReverseGeocoding = (lat, lon) => {
+  const cached = getReverseGeocodingFromCache(lat, lon)
+  if (!cached) {
+    const result = getReverseGeocodingFromGoogle(lat, lon)
+    saveToCache(lat, lon, result)
+  }
+  return cached
+}
+
+const saveToCache = (lat, lon, result) => {
+  const folderName = floor(lat)
+  if (!folderName.exists()) {
+    createFolder(folderName)
+  }
+  const entry = {lon: lon, place: result}
+  const fileName = lat - floor(lat)
+  if (!fileName.exists()) {
+    createFile(fileName)
+    writeFile(entry)
+  }
+  const fileContents = readFile(fileName)
+  if (!fileContents.some(lon)) {
+    appendFile(entry)
+  }
+}
+
+const getReverseGeocodingFromCache = (lat, lon) => {
+  const folderName = floor(lat)
+  if (!folderName.exists()) {
+    return null
+  }
+
+  const fileName = lat - floor(lat)
+  if (!fileName.exists()) {
+    return null
+  }
+  const fileContents = readFile(fileName)
+  if (fileContents.some(lon)) {
+    return fileContents.filter(entry => entry.lon == lon)
+  }
+  return null
+#+END_SRC
