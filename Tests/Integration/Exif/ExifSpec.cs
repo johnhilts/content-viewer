@@ -6,7 +6,7 @@ using NSpec;
 using FluentAssertions;
 using dotnet.Libraries.Utilities;
 
-namespace ez7zu6.Integration.Experience
+namespace ez7zu6.Integration.Exif
 {
     public class ExifSpec : nspec
     {
