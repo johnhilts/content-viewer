@@ -10,6 +10,7 @@ namespace dotnet.Libraries.Utilities
     public class CacheHelper
     {
         private readonly string _cacheRoot;
+        private readonly string _cacheDirectory = "./cacheDir";
         
         public CacheHelper() : this(string.Empty) { }
         
@@ -18,49 +19,67 @@ namespace dotnet.Libraries.Utilities
             _cacheRoot = cacheRoot;
         }
 
-        public void ClearCache()
+        public async Task ClearCache()
         {
+            var folders = await GetExistingFolders();
+            folders.ForEach(folder => {
+                    var files = Directory.GetFiles(folder);
+                    // files.ForEach(file => System.IO.File.Delete(file)); <-- what was wrong with this?!?
+                    foreach (var file in files) File.Delete(file);
+                    Directory.Delete(folder);
+            });
+            File.Delete(_cacheDirectory);
         }
 
-        public async Task SaveToCache(DecimalCoordinatePairModel model, string locationText)
+        public async Task SaveToCache(DecimalCoordinatePairModel coordinateModel, string locationText)
         {
-            var folderName = GetFolderName(model.Latitude);
+            var folderName = GetFolderName(coordinateModel.Latitude);
             if (!folderName.Exists()) {
                 Directory.CreateDirectory(folderName);
+                await UpdateCacheDirectory(folderName);
             }
 
-            var entry = new ReverseGeocodeModel {Latitude = model.Latitude, Longitude = model.Longitude, LocationText = locationText, };
-            var fileName = GetFileName(folderName, model.Latitude);
+            var entry = new ReverseGeocodeModel {Latitude = coordinateModel.Latitude, Longitude = coordinateModel.Longitude, LocationText = locationText, };
+            var fileName = GetFileName(folderName, coordinateModel.Latitude);
             if (!fileName.Exists()) {
                 var entries = new List<ReverseGeocodeModel> { entry };
                 await fileName.WriteJson(entries);
             }
 
             var fileContents = await fileName.ReadJson<List<ReverseGeocodeModel>>();
-            if (!fileContents.Exists(fc => fc.Longitude == model.Longitude)) {
+            if (!fileContents.Exists(fc => fc.Longitude == coordinateModel.Longitude)) {
                 fileContents.Add(entry);
                 await fileName.WriteJson(fileContents);
             }
         }
 
-        public async Task<string> ReadFromCache(DecimalCoordinatePairModel model)
+        private async Task<List<string>> GetExistingFolders() => _cacheDirectory.Exists() ? await _cacheDirectory.ReadJson<List<string>>() : new List<string>();
+
+        private async Task UpdateCacheDirectory(string folderName)
+        {
+            var folders = await GetExistingFolders();
+            folders.Add(folderName);
+            await _cacheDirectory.WriteJson(folders);
+        }
+
+        public async Task<string> ReadFromCache(DecimalCoordinatePairModel coordinateModel)
         {
 
-            var folderName = GetFolderName(model.Latitude);
+            var folderName = GetFolderName(coordinateModel.Latitude);
             if (!folderName.Exists()) {
                 Console.WriteLine("Folder name !exist!");
                 return null;
             }
 
-            var fileName = GetFileName(folderName, model.Latitude);
+            var fileName = GetFileName(folderName, coordinateModel.Latitude);
             if (!fileName.Exists()) {
                 Console.WriteLine("File name !exist!");
                 return null;
             }
 
             var fileContents = await fileName.ReadJson<List<ReverseGeocodeModel>>();
-            if (fileContents.Exists(entry => entry.Longitude == model.Longitude)) {
-                return fileContents.Single(entry => entry.Longitude == model.Longitude).LocationText;
+            if (fileContents.Exists(entry => entry.Longitude == coordinateModel.Longitude)) {
+                return fileContents.Single(entry => entry.Longitude == coordinateModel.Longitude).LocationText;
             }
 
                 Console.WriteLine("No matching entry!");

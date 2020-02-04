@@ -25,7 +25,7 @@ namespace ez7zu6.Integration.Geocode
                     var expected = @"Williamsburg Brooklyn New York";
                     var testRoot = "./";
                     var helper = new CacheHelper(testRoot);
-                    helper.ClearCache();
+                    await helper.ClearCache();
                     await helper.SaveToCache(testCoordinates, expected);
                     var actual = await helper.ReadFromCache(testCoordinates);
                     actual.Should().Be(expected);
