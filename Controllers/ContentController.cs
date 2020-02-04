@@ -91,7 +91,7 @@ namespace dotnet.Controllers
             var updatedSession = await _sessionService.UpdateSession(new UserSessionUpdateModel {CurrentFolder = currentRequestFolder, }); 
             var currentFolder = currentRequestFolder.MapContentFolder();
             var folders = currentRequestFolder.GetFolders();
-            var files = currentRequestFolder.GetFiles();
+            var files = await currentRequestFolder.GetFiles();
             await UpdateInfo(currentRequestFolder, files.Select(file => file.Name));
             var deletedFiles = await GetDeletedFiles(currentRequestFolder);
             // TODO: really wanted to use .Except here to filter ...
