@@ -22,7 +22,7 @@ namespace ez7zu6.Integration.Geocode
 
                 itAsync["can save to cache"] = async () =>
                 {
-                    var expected = @"Brooklyn New York";
+                    var expected = @"Williamsburg Brooklyn New York";
                     var testRoot = "./";
                     var helper = new CacheHelper(testRoot);
                     helper.ClearCache();
@@ -33,7 +33,7 @@ namespace ez7zu6.Integration.Geocode
 
                 itAsync["can reverse geocode"] = async () =>
                 {
-                    var expected = @"Brooklyn New York";
+                    var expected = @"Williamsburg Brooklyn New York";
                     var helper = new GeocodeHelper();
                     var actual = await helper.ReverseGeocode(testCoordinates);
                     actual.Should().Be(expected);

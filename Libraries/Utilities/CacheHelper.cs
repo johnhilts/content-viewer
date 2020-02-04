@@ -70,14 +70,15 @@ namespace dotnet.Libraries.Utilities
 
         private string GetFolderName(decimal latitude)
         {
-            return Math.Floor(latitude).ToString();
+            var prefix = string.IsNullOrWhiteSpace(_cacheRoot) ? string.Empty : $"{_cacheRoot}";
+            return Path.Combine(prefix, Math.Floor(latitude).ToString());
         }
 
         private string GetFileName(string folderName, decimal latitude)
         {
-            var fileName = latitude.ToString().Replace(folderName, string.Empty).Replace(".", string.Empty);
-            var prefix = string.IsNullOrWhiteSpace(_cacheRoot) ? string.Empty : $"{_cacheRoot}/";
-            return $"{prefix}{folderName}/{fileName}";
+            var containingFolderName = folderName.Split('/').Last();
+            var fileName = latitude.ToString().Replace(containingFolderName, string.Empty).Replace(".", string.Empty);
+            return $"{folderName}/{fileName}";
         }
 
     }
