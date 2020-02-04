@@ -1,13 +1,15 @@
 * Bugs
 ** DONE Deleting a file messes up filtering for everything
 
+** TODO need to auto save when trying to retrieve something missing from cache
+
 ** TODO Security vulnerability - you can break out of the wwwroot folder and go whereever you want
 
 * Refactoring
 ** DONE make a =Read= and =Write= extension for handling the =_info.json= file
 
 * Features
-** TODO File based caching
+** DONE File based caching
 *** Why?
 I want to try a different type of caching
 + Cache puts pressure on memory
