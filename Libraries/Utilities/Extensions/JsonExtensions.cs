@@ -1,20 +1,20 @@
 using System.IO;
 using System.Threading.Tasks;
-using System.Text.Json;
+using Newtonsoft.Json;
 
-namespace dotnet.Utils
+namespace dotnet.Libraries.Utilities.Extensions
 {
     public static class JsonExtensions
     {
 
         public static async Task<T> ReadJson<T>(this string fileName)
         {
-            return JsonSerializer.Deserialize<T>((await File.ReadAllTextAsync(fileName)));
+            return JsonConvert.DeserializeObject<T>((await File.ReadAllTextAsync(fileName)));
         }
 
         public static async Task WriteJson<T>(this string fileName, T info)
         {
-            await File.WriteAllTextAsync(fileName, JsonSerializer.Serialize(info));
+            await File.WriteAllTextAsync(fileName, JsonConvert.SerializeObject(info));
         }
 
     }

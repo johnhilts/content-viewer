@@ -26,10 +26,14 @@ namespace ez7zu6.Integration.Exif
 
                 it["can extract decimal coordinates"] = () =>
                 {
-                    var expected = (33.883938943142361111111111111m, 130.86684746093750000000000000m);
+                    var expected = new DecimalCoordinatePairModel 
+                        {
+                            Latitude = 33.883938943142361111111111111m, 
+                            Longitude = 130.86684746093750000000000000m, 
+                        };
                     var helper = new ExInfoHelper();
                     var actual = helper.ExtractGeoCoordinates(testFile);
-                    actual.Should().Be(expected);
+                    actual.ShouldBeEquivalentTo(expected);
                 };
 
             };
@@ -48,10 +52,14 @@ namespace ez7zu6.Integration.Exif
 
                 it["returns 0,0 coordinates"] = () =>
                 {
-                    var expected = (0m, 0m);
+                    var expected = new DecimalCoordinatePairModel 
+                        {
+                            Latitude = 0m, 
+                            Longitude = 0m, 
+                        };
                     var helper = new ExInfoHelper();
                     var actual = helper.ExtractGeoCoordinates(testFile);
-                    actual.Should().Be(expected);
+                    actual.ShouldBeEquivalentTo(expected);
                 };
 
             };

@@ -15,18 +15,19 @@ namespace dotnet.Libraries.Utilities
             return ExtractData(fileName);
         }
 
-        public (decimal Latitude, decimal Longitude) ExtractGeoCoordinates(string fileName)
+        public DecimalCoordinatePairModel ExtractGeoCoordinates(string fileName)
         {
             if (!File.Exists(fileName))
-                return (0, 0);
+                return new DecimalCoordinatePairModel { Latitude = 0, Longitude = 0};
 
             var location = ExtractLocation(fileName);
             return (location.Latitude == null || location.Longitude == null)
-                ? (0, 0)
-                : (
-                    location.Latitude.Degrees + location.Latitude.Minutes/60 + location.Latitude.Seconds/3600, 
-                    location.Longitude.Degrees + location.Longitude.Minutes/60 + location.Longitude.Seconds/3600
-                  );
+                ? new DecimalCoordinatePairModel {Latitude = 0, Longitude = 0, }
+                : new DecimalCoordinatePairModel 
+                {
+                    Latitude = location.Latitude.Degrees + location.Latitude.Minutes/60 + location.Latitude.Seconds/3600, 
+                    Longitude = location.Longitude.Degrees + location.Longitude.Minutes/60 + location.Longitude.Seconds/3600
+                };
         }
 
         private string ExtractData(string fileName)
