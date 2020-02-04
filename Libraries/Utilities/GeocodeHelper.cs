@@ -1,21 +1,24 @@
 using System;
-// using System.Net;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using dotnet.Libraries.Utilities;
 
 namespace dotnet.Libraries.Utilities
 {
     public class GeocodeHelper
     {
-        public string ReverseGeocode((decimal Latitude, decimal Longitude) coordinates)
+        public async Task<string> ReverseGeocode(DecimalCoordinatePairModel coordinates)
         {
-            return "Brooklyn New York";
-            /*
-            var text = "Dundee, Scotland";
-            var apiKey = "AIzaSyCOhg9ahueeKSwEzOKM6OZGxD226Ry3D5Y";
-            text = WebUtility.UrlEncode(text.Replace(" ", "+"));
-            var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={text}&sensor=false&key={apiKey}";
-
-            var cacert="c:/wwwroot/cacert.pem";
-            */
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={coordinates.Latitude},{coordinates.Longitude}&key={apiKey}";
+            var client = new HttpClient();
+            var response = await client.GetAsync(url);
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            dynamic obj = JsonConvert.DeserializeObject(jsonResponse);
+            // Console.WriteLine(jsonResponse);
+            var result = $"{obj.results[0].address_components[3].long_name} {obj.results[0].address_components[5].long_name}";
+            return result;
 
             /*
             $ch = curl_init();

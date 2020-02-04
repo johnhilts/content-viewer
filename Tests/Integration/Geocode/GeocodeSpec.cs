@@ -14,28 +14,28 @@ namespace ez7zu6.Integration.Geocode
         {
             context["geocode"] = () =>
             {
+                var testCoordinates = new DecimalCoordinatePairModel 
+                {
+                    Latitude = 40.714224m, 
+                    Longitude = -73.961452m, 
+                };
+
                 itAsync["can save to cache"] = async () =>
                 {
                     var expected = @"Brooklyn New York";
                     var testRoot = "./";
                     var helper = new CacheHelper(testRoot);
                     helper.ClearCache();
-                    var testCoordinates = new DecimalCoordinatePairModel 
-                        {
-                            Latitude = 40.714224m, 
-                            Longitude = -73.961452m, 
-                        };
                     await helper.SaveToCache(testCoordinates, expected);
                     var actual = await helper.ReadFromCache(testCoordinates);
                     actual.Should().Be(expected);
                 };
 
-                it["can reverse geocode"] = () =>
+                itAsync["can reverse geocode"] = async () =>
                 {
                     var expected = @"Brooklyn New York";
                     var helper = new GeocodeHelper();
-                    var testCoordinates = (40.714224m, -73.961452m);
-                    var actual = helper.ReverseGeocode(testCoordinates);
+                    var actual = await helper.ReverseGeocode(testCoordinates);
                     actual.Should().Be(expected);
                 };
 
