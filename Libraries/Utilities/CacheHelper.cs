@@ -67,13 +67,11 @@ namespace dotnet.Libraries.Utilities
 
             var folderName = GetFolderName(coordinateModel.Latitude);
             if (!folderName.Exists()) {
-                Console.WriteLine("Folder name !exist!");
                 return null;
             }
 
             var fileName = GetFileName(folderName, coordinateModel.Latitude);
             if (!fileName.Exists()) {
-                Console.WriteLine("File name !exist!");
                 return null;
             }
 
@@ -81,8 +79,6 @@ namespace dotnet.Libraries.Utilities
             if (fileContents.Exists(entry => entry.Longitude == coordinateModel.Longitude)) {
                 return fileContents.Single(entry => entry.Longitude == coordinateModel.Longitude).LocationText;
             }
-
-                Console.WriteLine("No matching entry!");
 
             return null;
         }

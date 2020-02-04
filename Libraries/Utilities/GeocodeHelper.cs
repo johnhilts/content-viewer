@@ -13,14 +13,19 @@ namespace dotnet.Libraries.Utilities
         {
             var helper = new CacheHelper("./");
             var cachedLocationText = await helper.ReadFromCache(coordinateModel);
-            return string.IsNullOrWhiteSpace(cachedLocationText)
-               ? (await CallReverseGeocodeApi(coordinateModel))
-               : cachedLocationText;
+            if (string.IsNullOrWhiteSpace(cachedLocationText))
+            {
+               var locationText = await CallReverseGeocodeApi(coordinateModel);
+               await helper.SaveToCache(coordinateModel, locationText);
+               return locationText;
+            }
+            
+            return cachedLocationText;
         }
 
         private async Task<string> CallReverseGeocodeApi(DecimalCoordinatePairModel coordinateModel)
         {
-            var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={coordinateModel.Latitude},{coordinateModel.Longitude}&key={apiKey}";
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={coordinateModel.Latitude},{coordinateModel.Longitude}&language=ja&key={apiKey}";
             var client = new HttpClient();
             var response = await client.GetAsync(url);
             var jsonResponse = await response.Content.ReadAsStringAsync();
